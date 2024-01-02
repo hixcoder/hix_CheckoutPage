@@ -4,9 +4,9 @@ export default function OrderItem() {
     <div className="flex flex-row w-full justify-between my-2">
       <div className="flex flex-row">
         <img
-          src="/products/p1.jpg"
+          src="/products/p2.jpg"
           alt="product-img"
-          className="h-12 rounded-lg"
+          className="h-12 w-12 rounded-lg"
         />
         <div className="flex flex-col mx-4">
           <p className=" font-light text-sm text-black">Camera</p>

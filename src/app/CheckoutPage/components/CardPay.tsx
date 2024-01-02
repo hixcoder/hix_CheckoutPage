@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { RiArrowDropDownLine } from "react-icons/ri";
 
 export default function CardPay() {
   const [emailSubmitted, setEmailSubmitted] = useState(false);
@@ -76,9 +77,9 @@ export default function CardPay() {
 
   return (
     <div>
-      <form className="flex flex-col " onSubmit={handleSubmit}>
+      <form className="flex flex-col font-light " onSubmit={handleSubmit}>
         <div className="mb-6">
-          <label htmlFor="email" className=" block mb-2 text-sm font-light">
+          <label htmlFor="email" className=" block mb-2 text-sm ">
             Email
           </label>
           <input
@@ -89,11 +90,11 @@ export default function CardPay() {
             id="email"
             required
             placeholder="email@example.com"
-            className="bg-white border border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-lg block w-full p-2.5"
+            className="bg-white border  border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-lg block w-full p-2.5"
           />
         </div>
         <div>
-          <label htmlFor="subject" className=" block mb-2 text-sm font-light">
+          <label htmlFor="subject" className=" block mb-2 text-sm ">
             Card information
           </label>
           <input
@@ -103,8 +104,8 @@ export default function CardPay() {
             type="text"
             id="subject"
             required
-            placeholder="Just Say Hi!"
-            className="bg-white border border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-lg block w-full p-2.5"
+            placeholder="1234 1234 1234 1234"
+            className="bg-white border border-b-0 border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-t-lg block w-full p-2.5"
           />
         </div>
         <div className="flex flex-row mb-6">
@@ -115,8 +116,8 @@ export default function CardPay() {
             type="text"
             id="subject"
             required
-            placeholder="Just Say Hi!"
-            className="bg-white border border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-lg block w-1/2 p-2.5"
+            placeholder="MM / YY"
+            className="bg-white border border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-bl-lg block w-1/2 p-2.5"
           />
           <input
             onChange={onHandleChange}
@@ -125,14 +126,50 @@ export default function CardPay() {
             type="text"
             id="subject"
             required
-            placeholder="Just Say Hi!"
-            className="bg-white border border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-lg block w-1/2 p-2.5"
+            placeholder="CVC"
+            className="bg-white border border-l-0 border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-br-lg block w-1/2 p-2.5"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label htmlFor="email" className=" block mb-2 text-sm ">
+            Cardholder name
+          </label>
+          <input
+            onChange={onHandleChange}
+            value={data.email}
+            name="email"
+            type="email"
+            id="email"
+            required
+            placeholder="Full name on card"
+            className="bg-white border  border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-lg block w-full p-2.5"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label htmlFor="email" className=" block mb-2 text-sm ">
+            Country or region
+          </label>
+          <div className="flex flex-row justify-between items-center cursor-pointer bg-white border border-b-0 w-full px-2.5  py-1 border-gray-400  rounded-t-lg">
+            <p className="text-sm text-black">Morocco</p>
+            <RiArrowDropDownLine className="text-3xl" />
+          </div>
+          <input
+            onChange={onHandleChange}
+            value={data.email}
+            name="email"
+            type="email"
+            id="email"
+            required
+            placeholder="ZIP"
+            className="bg-white border  border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-b-lg block w-full p-2.5"
           />
         </div>
 
         <button
           type="submit"
-          className="bg-blue-950 text-gray-300  font-medium py-2.5 px-5 rounded-lg w-full"
+          className="bg-blue-950 text-gray-300  font-medium py-2.5 px-5 mt-4 mb-6 rounded-lg w-full"
         >
           Pay
         </button>
