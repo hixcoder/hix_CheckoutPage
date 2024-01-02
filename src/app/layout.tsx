@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import TanstackProvider from "./providers/TanstackProvider";
+import { OrderItemsProvider } from "./CheckoutPage/context/OrderItemsContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <TanstackProvider>{children}</TanstackProvider>
+        <OrderItemsProvider>
+          <TanstackProvider>{children}</TanstackProvider>
+        </OrderItemsProvider>
       </body>
     </html>
   );

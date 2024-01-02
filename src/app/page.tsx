@@ -6,9 +6,7 @@ import { OrderItemsProvider } from "./CheckoutPage/context/OrderItemsContext";
 export default function Home() {
   return (
     <main>
-      <OrderItemsProvider>
-        <CheckoutPage />
-      </OrderItemsProvider>
+      <CheckoutPage />
     </main>
   );
 }

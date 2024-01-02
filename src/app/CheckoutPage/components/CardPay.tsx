@@ -416,7 +416,7 @@ export default function CardPay() {
           type="submit"
           className="bg-blue-950 text-gray-300  font-medium py-2.5 px-5 mt-4 mb-6 rounded-lg w-full"
         >
-          Pay
+          Checkout
         </button>
         {emailSubmitted && (
           <p className="text-green-500 text-sm mt-2">Email sent successfuly</p>
