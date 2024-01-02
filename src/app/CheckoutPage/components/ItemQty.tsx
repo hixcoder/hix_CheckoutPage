@@ -1,18 +1,73 @@
+"use client";
 import { Dialog } from "@mui/material";
 import { FaPlus } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { FaMinus } from "react-icons/fa";
+import { useEffect, useState } from "react";
+import { useOrderItems } from "../context/OrderItemsContext";
 export interface SimpleDialogProps {
   open: boolean;
-  selectedValue: string;
-  onClose: (value: string) => void;
+  orderItem: OrderItem;
+  onClose: (value: number) => void;
 }
 
 export function ItemQty(props: SimpleDialogProps) {
-  const { onClose, selectedValue, open } = props;
+  const { onClose, open } = props;
+  const [selectedQty, setSelectedQty] = useState(props.orderItem.quantity);
+
   const handleClose = () => {
-    onClose(selectedValue);
+    onClose(selectedQty);
   };
+
+  function handleIncrement() {
+    setSelectedQty((prev) => (prev + 1 < 11 ? prev + 1 : prev));
+  }
+
+  function handleDecrement() {
+    setSelectedQty((prev) => (prev + 1 > 2 ? prev - 1 : prev));
+  }
+
+  // here we update the quantity of the product
+  function handleUpdate() {
+    // const indexToUpdate = orderItems.findIndex(
+    //   (item) => item.productId === "product_id_1"
+    // );
+
+    // if (indexToUpdate !== -1) {
+    //   // Update the properties of the item at the found index
+    //   orderItems[indexToUpdate] = {
+    //     ...orderItems[indexToUpdate], // Maintain existing properties
+    //     quantity: selectedQty,
+    //   };
+    //   onClose(selectedQty);
+    // }
+    const updatedOrderItems = orderItems.map((item) => {
+      if (item.productId === props.orderItem.productId) {
+        return {
+          ...item,
+          quantity: selectedQty,
+        };
+      }
+      onClose(selectedQty);
+      return item;
+    });
+
+    setOrderItems(updatedOrderItems);
+  }
+
+  const { orderItems, setOrderItems } = useOrderItems();
+  useEffect(() => {
+    console.log("orderItems changed:", orderItems);
+  }, [orderItems]);
+
+  function onHandleChange(
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) {
+    const { value } = e.target;
+    setSelectedQty(parseInt(value));
+  }
 
   return (
     <Dialog onClose={handleClose} open={open}>
@@ -44,28 +99,30 @@ export function ItemQty(props: SimpleDialogProps) {
         <div className="flex flex-row my-4 mx-[20%] items-center">
           <div className="rounded-full">
             <FaMinus
-              onClick={handleClose}
+              onClick={handleDecrement}
               className=" text-gray-400 hover:text-black text-3xl cursor-pointer m-auto bg-slate-100 p-2 rounded-full"
             />
           </div>
           <input
-            // onChange={onHandleChange}
-            // value={data.subject}
+            onChange={onHandleChange}
+            value={selectedQty}
             name="subject"
             type="number"
             id="subject"
             required
             placeholder=""
-            className="bg-white border shadow-sm mx-2 placeholder-[#9CA2A] text-black text-sm rounded-lg block w-full p-2.5"
+            className="bg-white border shadow-sm mx-2 placeholder-[#9CA2A] text-black text-sm rounded-lg block w-full p-2.5 appearance-none "
+            style={{ WebkitAppearance: "none", MozAppearance: "textfield" }}
           />
           <div className="rounded-full">
             <FaPlus
-              onClick={handleClose}
+              onClick={handleIncrement}
               className=" text-gray-400 hover:text-black text-3xl cursor-pointer m-auto bg-slate-100 p-2 rounded-full"
             />
           </div>
         </div>
         <button
+          onClick={handleUpdate}
           type="submit"
           className="bg-blue-950 text-white  font-light py-2.5 px-5 my-4 rounded-lg w-[80%] mx-auto"
         >

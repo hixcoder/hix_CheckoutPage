@@ -9,6 +9,11 @@ export default function CardPay() {
     email: "",
     subject: "",
     message: "",
+    CardNbr: 0,
+    cardExperDay: 0,
+    CardCvc: 0,
+    CardholderName: "",
+    Zip: "",
   });
 
   function onHandleChange(
@@ -59,6 +64,11 @@ export default function CardPay() {
         email: "",
         subject: "",
         message: "",
+        CardNbr: 0,
+        cardExperDay: 0,
+        CardCvc: 0,
+        CardholderName: "",
+        Zip: "",
       });
       if (!response.ok) {
         // Handle non-OK responses (e.g., server errors)
@@ -98,7 +108,10 @@ export default function CardPay() {
   ];
   return (
     <div>
-      <form className="flex flex-col font-light " onSubmit={handleSubmit}>
+      <form
+        className="flex flex-col font-light text-black"
+        onSubmit={handleSubmit}
+      >
         <div className="mb-6">
           <label htmlFor="email" className=" block mb-2 text-sm ">
             Email
@@ -111,65 +124,66 @@ export default function CardPay() {
             id="email"
             required
             placeholder="email@example.com"
-            className="bg-white border  border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-lg block w-full p-2.5"
+            className="bg-white border  border-gray-400 placeholder-[#9CA2A]  text-sm rounded-lg block w-full p-2.5 outline-none"
           />
         </div>
         <div>
-          <label htmlFor="subject" className=" block mb-2 text-sm ">
+          <label htmlFor="CardNbr" className=" block mb-2 text-sm ">
             Card information
           </label>
           <input
-            onChange={onHandleChange}
-            value={data.subject}
-            name="subject"
-            type="text"
-            id="subject"
+            // onChange={onHandleChange}
+            // value={data.CardNbr}
+            name="CardNbr"
+            type="number"
+            id="CardNbr"
             required
             placeholder="1234 1234 1234 1234"
-            className="bg-white border border-b-0 border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-t-lg block w-full p-2.5"
+            className="bg-white border border-b-0 border-gray-400 placeholder-[#9CA2A]  text-sm rounded-t-lg block w-full p-2.5 outline-none"
+            style={{ WebkitAppearance: "none", MozAppearance: "textfield" }}
           />
         </div>
         <div className="flex flex-row mb-6">
           <input
-            onChange={onHandleChange}
-            value={data.subject}
-            name="subject"
-            type="text"
-            id="subject"
+            // onChange={onHandleChange}
+            // value={data.cardExperDay}
+            name="cardExperDay"
+            type="number"
             required
             placeholder="MM / YY"
-            className="bg-white border border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-bl-lg block w-1/2 p-2.5"
+            className="bg-white border border-gray-400 placeholder-[#9CA2A]  text-sm rounded-bl-lg block w-1/2 p-2.5 outline-none"
+            style={{ WebkitAppearance: "none", MozAppearance: "textfield" }}
           />
           <input
-            onChange={onHandleChange}
-            value={data.subject}
-            name="subject"
-            type="text"
-            id="subject"
+            // onChange={onHandleChange}
+            // value={data.CardCvc}
+            name="CardCvc"
+            type="number"
             required
             placeholder="CVC"
-            className="bg-white border border-l-0 border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-br-lg block w-1/2 p-2.5"
+            className="bg-white border border-l-0 border-gray-400 placeholder-[#9CA2A]  text-sm rounded-br-lg block w-1/2 p-2.5 outline-none"
+            style={{ WebkitAppearance: "none", MozAppearance: "textfield" }}
           />
         </div>
 
         <div className="mb-6">
-          <label htmlFor="email" className=" block mb-2 text-sm ">
+          <label htmlFor="CardholderName" className=" block mb-2 text-sm ">
             Cardholder name
           </label>
           <input
             onChange={onHandleChange}
-            value={data.email}
-            name="email"
-            type="email"
-            id="email"
+            value={data.CardholderName}
+            name="CardholderName"
+            type="text"
+            id="CardholderName"
             required
             placeholder="Full name on card"
-            className="bg-white border  border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-lg block w-full p-2.5"
+            className="bg-white border  border-gray-400 placeholder-[#9CA2A]  text-sm rounded-lg block w-full p-2.5 outline-none"
           />
         </div>
 
         <div className="mb-6">
-          <label htmlFor="email" className=" block mb-2 text-sm ">
+          <label htmlFor="Zip" className=" block mb-2 text-sm ">
             Country or region
           </label>
           <button
@@ -208,13 +222,13 @@ export default function CardPay() {
           </Menu>
           <input
             onChange={onHandleChange}
-            value={data.email}
-            name="email"
-            type="email"
-            id="email"
+            value={data.Zip}
+            name="Zip"
+            type="text"
+            id="Zip"
             required
             placeholder="ZIP"
-            className="bg-white border  border-gray-400 placeholder-[#9CA2A] text-gray-100 text-sm rounded-b-lg block w-full p-2.5"
+            className="bg-white border  border-gray-400 placeholder-[#9CA2A]  text-sm rounded-b-lg block w-full p-2.5 outline-none"
           />
         </div>
 

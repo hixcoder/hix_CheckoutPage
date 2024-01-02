@@ -4,28 +4,23 @@ import Footer from "./components/Footer";
 import OrderItem from "./components/OrderItem";
 import ApplePay from "./components/ApplePay";
 import CardPay from "./components/CardPay";
-import { useEffect } from "react";
-// Sample order items
-const orderItems: OrderItem[] = [
-  {
-    productId: "product_id_1",
-    name: "Product 1",
-    image: "/products/p1.jpg",
-    quantity: 2,
-    price: 19.99,
-  },
-  {
-    productId: "product_id_2",
-    name: "Product 2",
-    image: "/products/p1.jpg",
-    quantity: 1,
-    price: 29.99,
-  },
-];
+import { useEffect, useState } from "react";
+import { useOrderItems } from "./context/OrderItemsContext";
 
 export default function CheckoutPage() {
+  const { orderItems } = useOrderItems();
+  const [totalPrice, setTotalPrice] = useState(0);
   useEffect(() => {
-    console.log("data changed");
+    function getData() {
+      console.log("orderItems changed:", orderItems);
+      let totalPriceTmp = 0;
+      orderItems.map((item, index) => {
+        totalPriceTmp += item.price * item.quantity;
+        console.log(index + "===> " + totalPriceTmp);
+      });
+      setTotalPrice(totalPriceTmp);
+    }
+    getData();
   }, [orderItems]);
   return (
     <div className=" min-h-screen grid grid-cols-1  lg:grid-cols-12 items-center justify-between  bg-white text-gray-700 ">
@@ -36,16 +31,16 @@ export default function CheckoutPage() {
             <IoArrowBackOutline className="mr-4" />
             <p className="w-full ">Back</p>
           </div>
-          <div className="w-full flex flex-col justify-end mx-4">
+          <div className="w-full flex flex-col justify-end lg:mx-4">
             <div className="my-8 cursor-default">
               <p>total Price</p>
-              <h1 className="text-3xl my-2 font-semibold text-black">
-                $129.00
+              <h1 className="text-4xl my-2 font-semibold text-black">
+                {"$" + totalPrice.toFixed(2)}
               </h1>
             </div>
             <div className="flex flex-col">
               {orderItems.map((item, index) => (
-                <OrderItem key={index} orderItems={item} />
+                <OrderItem key={index} orderItem={item} />
               ))}
             </div>
           </div>

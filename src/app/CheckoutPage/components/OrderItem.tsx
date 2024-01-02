@@ -2,16 +2,16 @@
 import { useState } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { ItemQty } from "./ItemQty";
-export default function OrderItem(prompt: { orderItems: OrderItem }) {
+export default function OrderItem(prompt: { orderItem: OrderItem }) {
   const [open, setOpen] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("emails[1]");
+  const [selectedQty, setSelectedQty] = useState(prompt.orderItem.quantity);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-  const handleClose = (value: string) => {
+  const handleClose = (value: number) => {
     setOpen(false);
-    setSelectedValue(value);
+    setSelectedQty(value);
   };
   return (
     <div className="flex flex-row w-full justify-between my-2">
@@ -23,19 +23,19 @@ export default function OrderItem(prompt: { orderItems: OrderItem }) {
         />
         <div className="flex flex-col mx-4">
           <p className=" font-light text-sm text-black">
-            {prompt.orderItems.name}
+            {prompt.orderItem.name}
           </p>
           <div
             onClick={handleClickOpen}
             className="flex flex-row cursor-pointer my-1 bg-gray-200 justify-center rounded-sm p-0.5"
           >
             <p className="text-xs text-black">
-              {"Qty " + prompt.orderItems.quantity}
+              {"Qty " + prompt.orderItem.quantity}
             </p>
             <RiArrowDropDownLine />
           </div>
           <ItemQty
-            selectedValue={selectedValue}
+            orderItem={prompt.orderItem}
             open={open}
             onClose={handleClose}
           />
@@ -43,10 +43,11 @@ export default function OrderItem(prompt: { orderItems: OrderItem }) {
       </div>
       <div className="items-start text-right">
         <h2 className=" font-light text-sm text-black">
-          {"$" + prompt.orderItems.price * prompt.orderItems.quantity}
+          {"$" +
+            (prompt.orderItem.price * prompt.orderItem.quantity).toFixed(2)}
         </h2>
         <p className=" font-light text-xs  my-1">
-          {"$" + prompt.orderItems.price + " each"}
+          {"$" + prompt.orderItem.price.toFixed(2) + " each"}
         </p>
       </div>
     </div>
