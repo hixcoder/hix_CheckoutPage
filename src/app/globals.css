@@ -27,5 +27,5 @@ body {
 }
 
 .shadow-inner-left {
-  box-shadow: -8px 0 6px -6px rgba(0, 0, 0, 0.047) inset;
+  box-shadow: -10px 0 6px -6px rgba(0, 0, 0, 0.047) inset;
 }

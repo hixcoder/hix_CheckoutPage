@@ -1,9 +1,32 @@
+"use client";
 import { IoArrowBackOutline } from "react-icons/io5";
 import Footer from "./components/Footer";
 import OrderItem from "./components/OrderItem";
 import ApplePay from "./components/ApplePay";
 import CardPay from "./components/CardPay";
+import { useEffect } from "react";
+// Sample order items
+const orderItems: OrderItem[] = [
+  {
+    productId: "product_id_1",
+    name: "Product 1",
+    image: "/products/p1.jpg",
+    quantity: 2,
+    price: 19.99,
+  },
+  {
+    productId: "product_id_2",
+    name: "Product 2",
+    image: "/products/p1.jpg",
+    quantity: 1,
+    price: 29.99,
+  },
+];
+
 export default function CheckoutPage() {
+  useEffect(() => {
+    console.log("data changed");
+  }, [orderItems]);
   return (
     <div className=" min-h-screen grid grid-cols-1  lg:grid-cols-12 items-center justify-between  bg-white text-gray-700 ">
       <div className="min-w-full col-span-6 place-self-center flex flex-col justify-between items-center h-full p-4 lg:p-12 lg:bg-slate-50  shadow-inner-left">
@@ -21,8 +44,9 @@ export default function CheckoutPage() {
               </h1>
             </div>
             <div className="flex flex-col">
-              <OrderItem />
-              <OrderItem />
+              {orderItems.map((item, index) => (
+                <OrderItem key={index} orderItems={item} />
+              ))}
             </div>
           </div>
         </div>
@@ -34,7 +58,7 @@ export default function CheckoutPage() {
 
       {/* the payment form */}
       <div className="min-w-full col-span-6 place-self-center flex flex-col justify-start items-center h-full p-4 lg:p-12">
-        <div className=" w-[90%] lg:w-[70%] max-w-[32rem]">
+        <div className=" w-[90%] lg:w-[70%] max-w-[32rem] ">
           <ApplePay />
           <hr className="my-4" />
 

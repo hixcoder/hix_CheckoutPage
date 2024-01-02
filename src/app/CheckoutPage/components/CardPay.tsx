@@ -1,4 +1,5 @@
 "use client";
+import { Menu, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 
@@ -75,6 +76,26 @@ export default function CardPay() {
     }
   }
 
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const menuItems = [
+    "Profile",
+    "My account",
+    "Logout",
+    "Profile",
+    "My account",
+    "Logout",
+    "Profile",
+    "My account",
+    "Logout",
+  ];
   return (
     <div>
       <form className="flex flex-col font-light " onSubmit={handleSubmit}>
@@ -151,10 +172,40 @@ export default function CardPay() {
           <label htmlFor="email" className=" block mb-2 text-sm ">
             Country or region
           </label>
-          <div className="flex flex-row justify-between items-center cursor-pointer bg-white border border-b-0 w-full px-2.5  py-1 border-gray-400  rounded-t-lg">
+          <button
+            id="basic-button"
+            aria-controls={open ? "basic-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            onClick={handleClick}
+            className="flex flex-row justify-between items-center cursor-pointer bg-white border border-b-0 w-full px-2.5  py-1 border-gray-400  rounded-t-lg"
+          >
             <p className="text-sm text-black">Morocco</p>
             <RiArrowDropDownLine className="text-3xl" />
-          </div>
+          </button>
+
+          <Menu
+            sx={{ width: 620 }}
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            MenuListProps={{
+              "aria-labelledby": "basic-button",
+            }}
+            anchorOrigin={{
+              vertical: "bottom",
+              horizontal: "left",
+            }}
+          >
+            <div className="h-36 w-96 max-w-[32rem]">
+              {menuItems.map((item, index) => (
+                <MenuItem key={index} onClick={handleClose}>
+                  {item}
+                </MenuItem>
+              ))}
+            </div>
+          </Menu>
           <input
             onChange={onHandleChange}
             value={data.email}
