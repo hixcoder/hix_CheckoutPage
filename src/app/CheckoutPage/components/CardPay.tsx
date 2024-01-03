@@ -126,6 +126,45 @@ export default function CardPay() {
       }
     }
 
+    // ===================== VALIDATE CardholderName =====================
+    if (name === "CardholderName") {
+      console.log(value.length, " ", value);
+      if (value.length == 0) {
+        setData((prevData) => ({
+          ...prevData,
+          ["CardholderName"]: "",
+        }));
+      }
+      if (value.length > 30) {
+        return;
+      }
+      if (!value) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          CardholderName: "Required",
+        }));
+      }
+    }
+    // ===================== VALIDATE Zip =====================
+    if (name === "Zip") {
+      console.log(value.length, " ", value);
+      if (value.length == 0) {
+        setData((prevData) => ({
+          ...prevData,
+          ["Zip"]: "",
+        }));
+      }
+      if (value.length > 30) {
+        return;
+      }
+      if (!value) {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          Zip: "Required",
+        }));
+      }
+    }
+
     setData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -198,6 +237,7 @@ export default function CardPay() {
     }
   }
 
+  const [selectedCountry, setSelectedCountry] = useState("Morocco");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -205,6 +245,10 @@ export default function CardPay() {
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+  const handleMenuItemClick = (item: string) => {
+    setSelectedCountry(item);
+    handleClose();
   };
 
   const menuItems = [
@@ -247,7 +291,7 @@ export default function CardPay() {
         onSubmit={handleSubmit}
         noValidate
       >
-        {/* Email  */}
+        {/* ============== Email ============== */}
         <div className="mb-6">
           <label
             htmlFor="email"
@@ -279,8 +323,9 @@ export default function CardPay() {
             </p>
           )}
         </div>
+        {/* ========================================== */}
 
-        {/* Card information */}
+        {/*============== Card information ============== */}
         <div>
           <label
             htmlFor="CardNbr"
@@ -345,10 +390,20 @@ export default function CardPay() {
             Card information Incorrect
           </p>
         )}
+        {/* ========================================== */}
 
+        {/*============== CardholderName ============== */}
         <div className="my-6">
-          <label htmlFor="CardholderName" className=" block mb-2 text-sm ">
-            Cardholder name
+          <label
+            htmlFor="CardholderName"
+            className="  mb-2 text-sm flex flex-row justify-between"
+          >
+            <p>Cardholder name</p>
+            {errors.CardholderName === "Required" && (
+              <p className="text-red-500 text-xs font-light">
+                {errors.CardholderName.toUpperCase()}
+              </p>
+            )}
           </label>
           <input
             onChange={onHandleChange}
@@ -358,13 +413,28 @@ export default function CardPay() {
             id="CardholderName"
             required
             placeholder="Full name on card"
-            className="bg-white border  border-gray-400 placeholder-[#9CA2A]  text-sm rounded-lg block w-full p-2.5 outline-none"
+            className={`${
+              errors.CardholderName
+                ? "border-red-500 text-red-500"
+                : "border-gray-400"
+            } bg-white border   placeholder-[#9CA2A]  text-sm rounded-lg block w-full p-2.5 outline-none`}
           />
         </div>
+        {/* ========================================== */}
 
         <div className="mb-6">
-          <label htmlFor="Zip" className=" block mb-2 text-sm ">
-            Country or region
+          {/*============== Country ============== */}
+
+          <label
+            htmlFor="Zip"
+            className="  mb-2 text-sm flex flex-row justify-between"
+          >
+            <p>Country or region</p>
+            {errors.Zip === "Required" && (
+              <p className="text-red-500 text-xs font-light">
+                {errors.Zip.toUpperCase()}
+              </p>
+            )}
           </label>
           <button
             id="basic-button"
@@ -374,7 +444,7 @@ export default function CardPay() {
             onClick={handleClick}
             className="flex flex-row justify-between items-center cursor-pointer bg-white border border-b-0 w-full px-2.5  py-1 border-gray-400  rounded-t-lg"
           >
-            <p className="text-sm text-black">Morocco</p>
+            <p className="text-sm text-black">{selectedCountry}</p>
             <RiArrowDropDownLine className="text-3xl" />
           </button>
 
@@ -394,12 +464,17 @@ export default function CardPay() {
           >
             <div className="h-36 w-96 max-w-[32rem]">
               {menuItems.map((item, index) => (
-                <MenuItem key={index} onClick={handleClose}>
+                <MenuItem key={index} onClick={() => handleMenuItemClick(item)}>
                   {item}
                 </MenuItem>
               ))}
             </div>
           </Menu>
+
+          {/* ========================================== */}
+
+          {/*============== Zip ============== */}
+
           <input
             onChange={onHandleChange}
             value={data.Zip}
@@ -408,8 +483,11 @@ export default function CardPay() {
             id="Zip"
             required
             placeholder="ZIP"
-            className="bg-white border  border-gray-400 placeholder-[#9CA2A]  text-sm rounded-b-lg block w-full p-2.5 outline-none"
+            className={`${
+              errors.Zip ? "border-red-500 text-red-500" : "border-gray-400"
+            } bg-white border   placeholder-[#9CA2A]  text-sm rounded-b-lg block w-full p-2.5 outline-none`}
           />
+          {/* ========================================== */}
         </div>
 
         <button
