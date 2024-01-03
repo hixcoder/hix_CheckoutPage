@@ -5,8 +5,18 @@ import { RiArrowDropDownLine } from "react-icons/ri";
 import { useOrder } from "../context/OrderContext";
 import { HandleCheckout } from "../fetch/ApiCalls";
 import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
+import { CheckoutAlert } from "./CheckoutAlert";
 
 export default function CardPay() {
+  const [open2, setOpen2] = useState(true);
+  const [res2, setRes2] = useState<OrderRes>();
+  // const handleClickOpen = () => {
+  //   setOpen2(true);
+  // };
+  const handleClose2 = () => {
+    setOpen2(false);
+    // setOrderSubmitted(false);
+  };
   const { order } = useOrder();
 
   const [orderSubmitted, setOrderSubmitted] = useState(false);
@@ -40,11 +50,12 @@ export default function CardPay() {
 
     // ===================== VALIDATE Card information =====================
 
-    if (name === "CardNbr") {
+    // check the CardNbr
+    else if (name === "CardNbr") {
       const isValidCardNbr = /^\d{16}$/.test(value); // Check if numericValue has exactly 16 digits
       const isDigit = /^\d+$/.test(value);
 
-      console.log(value.length, " ", value);
+      // console.log(value.length, " ", value);
       if (value.length == 0) {
         setData((prevData) => ({
           ...prevData,
@@ -67,11 +78,12 @@ export default function CardPay() {
       }
     }
 
-    if (name === "cardExperDay") {
+    // check the cardExperDay
+    else if (name === "cardExperDay") {
       const isValidCardNbr = /^\d{4}$/.test(value); // Check if numericValue has exactly 16 digits
       const isDigit = /^\d+$/.test(value);
 
-      console.log(value.length, " ", value);
+      // console.log(value.length, " ", value);
       if (value.length == 0) {
         setData((prevData) => ({
           ...prevData,
@@ -94,11 +106,12 @@ export default function CardPay() {
       }
     }
 
-    if (name === "CardCvc") {
+    // check the CardCvc
+    else if (name === "CardCvc") {
       const isValidCardNbr = /^\d{3}$/.test(value); // Check if numericValue has exactly 16 digits
       const isDigit = /^\d+$/.test(value);
 
-      console.log(value.length, " ", value);
+      // console.log(value.length, " ", value);
       if (value.length == 0) {
         setData((prevData) => ({
           ...prevData,
@@ -122,8 +135,8 @@ export default function CardPay() {
     }
 
     // ===================== VALIDATE CardholderName =====================
-    if (name === "CardholderName") {
-      console.log(value.length, " ", value);
+    else if (name === "CardholderName") {
+      // console.log(value.length, " ", value);
       if (value.length == 0) {
         setData((prevData) => ({
           ...prevData,
@@ -141,8 +154,8 @@ export default function CardPay() {
       }
     }
     // ===================== VALIDATE Zip =====================
-    if (name === "Zip") {
-      console.log(value.length, " ", value);
+    else if (name === "Zip") {
+      // console.log(value.length, " ", value);
       if (value.length == 0) {
         setData((prevData) => ({
           ...prevData,
@@ -194,10 +207,10 @@ export default function CardPay() {
     formValidator("Zip", data.Zip);
     const hasErrors = Object.values(errors).some((error) => !!error);
     if (hasErrors) {
-      console.error("Form has errors, please fix them");
+      console.error("Form is not complete!");
       return;
     }
-    console.log("==========> FORM OK");
+    // console.log("==========> FORM OK");
 
     const customer: Customer = {
       name: data.CardholderName,
@@ -212,8 +225,19 @@ export default function CardPay() {
       type: "visa-card",
     };
 
-    const myData = {
-      order,
+    const orderItemsTmp: OrderItem2[] = order.items.map(
+      ({ image, ...rest }) => rest
+    );
+    const order2: Order2 = {
+      items: orderItemsTmp,
+      totalPrice: order.totalPrice,
+    };
+    // console.log("==============2==============");
+    // console.log(order);
+    // console.log(orderTmp);
+    // console.log("===============1=============");
+    const myData: CheckoutPayload = {
+      order2,
       customer,
       paymentMethod,
     };
@@ -224,8 +248,9 @@ export default function CardPay() {
   const { mutate } = useMutation({
     mutationFn: handleSubmit,
     onSuccess: (res) => {
+      setRes2(res);
       if (res.status === "Ok") {
-        setOrderStatus(["Payment succeeded.", "text-green-500"]);
+        setOrderStatus(["Ok", "text-green-500"]);
         setData({
           email: "",
           CardNbr: "",
@@ -236,15 +261,20 @@ export default function CardPay() {
         });
       } else if (res.status === "Not enough") {
         setOrderStatus(["No enough money on this card.", "text-orange-500"]);
+        setTimeout(() => {
+          setOrderSubmitted(false);
+        }, 6000);
       } else {
         setOrderStatus(["Card is Not valid!", "text-red-500"]);
+        setTimeout(() => {
+          setOrderSubmitted(false);
+        }, 6000);
       }
-      console.log(res);
+      // console.log(res);
       setOrderSubmitted(true);
-      setTimeout(() => {
-        setOrderSubmitted(false);
-      }, 6000);
-      console.log("data", data);
+      setOpen2(true);
+
+      // console.log("data", data);
     },
   });
 
@@ -510,7 +540,10 @@ export default function CardPay() {
         >
           Checkout
         </button>
-        {orderSubmitted && (
+        {orderSubmitted && orderStatus[0] === "Ok" && (
+          <CheckoutAlert response={res2!} open={open2} onClose={handleClose2} />
+        )}
+        {orderSubmitted && orderStatus[0] !== "Ok" && (
           <p className={`${orderStatus[1]} text-sm mt-2 animate-bounce `}>
             {orderStatus[0]}
           </p>

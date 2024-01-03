@@ -1,7 +1,24 @@
+interface OrderRes {
+  status: string;
+  checkoutPayload: CheckoutPayload;
+}
+
 interface CheckoutPayload {
-  order: Order;
+  order2: Order2;
   customer: Customer;
   paymentMethod: PaymentMethod;
+}
+
+interface Order2 {
+  items: OrderItem2[];
+  totalPrice: number;
+}
+
+interface OrderItem2 {
+  productId: string;
+  name: string;
+  quantity: number;
+  price: number;
 }
 
 interface Order {

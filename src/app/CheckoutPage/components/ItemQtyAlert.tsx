@@ -8,7 +8,7 @@ import { useOrder } from "../context/OrderContext";
 export interface SimpleDialogProps {
   open: boolean;
   orderItem: OrderItem;
-  onClose: (value: number) => void;
+  onClose: () => void;
 }
 
 export function ItemQty(props: SimpleDialogProps) {
@@ -16,7 +16,7 @@ export function ItemQty(props: SimpleDialogProps) {
   const [selectedQty, setSelectedQty] = useState(props.orderItem.quantity);
 
   const handleClose = () => {
-    onClose(selectedQty);
+    onClose();
   };
 
   function handleIncrement() {
@@ -40,13 +40,13 @@ export function ItemQty(props: SimpleDialogProps) {
           quantity: selectedQty,
         };
       }
-      onClose(selectedQty);
+      onClose();
       return item;
     });
     let totalPriceTmp = 0;
     updatedOrder.items.map((item, index) => {
       totalPriceTmp += item.price * item.quantity;
-      console.log(index + "===> " + totalPriceTmp);
+      // console.log(index + "===> " + totalPriceTmp);
     });
     updatedOrder.totalPrice = totalPriceTmp;
     setOrder(updatedOrder);
@@ -54,7 +54,7 @@ export function ItemQty(props: SimpleDialogProps) {
 
   const { order, setOrder } = useOrder();
   useEffect(() => {
-    console.log("order changed:", order);
+    // console.log("order changed:", order);
   }, [order]);
 
   function onHandleChange(
@@ -129,7 +129,4 @@ export function ItemQty(props: SimpleDialogProps) {
       </div>
     </Dialog>
   );
-}
-function setOrder(updatedorder: any) {
-  throw new Error("Function not implemented.");
 }

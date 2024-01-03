@@ -1,4 +1,4 @@
-export async function HandleCheckout(myData: any) {
+export async function HandleCheckout(myData: CheckoutPayload) {
   try {
     const JSONdata = JSON.stringify(myData);
     const endpoint = "/api/checkout";

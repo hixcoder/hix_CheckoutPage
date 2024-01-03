@@ -3,26 +3,18 @@ import { NextResponse } from "next/server";
 
 export async function POST(req: any) {
   try {
-    const {
-      order: order,
-      customer: customer,
-      paymentMethod,
-    } = await req.json();
+    const { order2, customer, paymentMethod } = await req.json();
 
-    const myData: {
-      order: Order;
-      customer: Customer;
-      paymentMethod: PaymentMethod;
-    } = {
-      order: order,
+    const myData: CheckoutPayload = {
+      order2: order2,
       customer: customer,
       paymentMethod: paymentMethod,
     };
-    console.log(myData);
+    // console.log(myData);
 
-    const data = {
+    const data: OrderRes = {
       status: "",
-      data: myData,
+      checkoutPayload: myData,
     };
 
     if (myData.paymentMethod.cardNumber === "0000000000000000") {

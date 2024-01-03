@@ -11,7 +11,7 @@ export default function CheckoutPage() {
   const { order } = useOrder();
   useEffect(() => {
     function getData() {
-      console.log("order changed:", order);
+      // console.log("order changed:", order);
     }
     getData();
   }, [order]);
@@ -48,7 +48,7 @@ export default function CheckoutPage() {
       <div className="min-w-full col-span-6 place-self-center flex flex-col justify-start items-center h-full p-4 lg:p-12">
         <div className=" w-[90%] lg:w-[70%] max-w-[32rem] ">
           <ApplePay />
-          <hr className="my-4" />
+          <hr className="mt-12 mb-8" />
 
           <CardPay />
         </div>

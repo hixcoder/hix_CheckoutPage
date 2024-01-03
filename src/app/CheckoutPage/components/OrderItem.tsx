@@ -1,17 +1,15 @@
 "use client";
 import { useState } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
-import { ItemQty } from "./ItemQty";
+import { ItemQty } from "./ItemQtyAlert";
 export default function OrderItem(prompt: { orderItem: OrderItem }) {
   const [open, setOpen] = useState(false);
-  const [selectedQty, setSelectedQty] = useState(prompt.orderItem.quantity);
 
   const handleClickOpen = () => {
     setOpen(true);
   };
-  const handleClose = (value: number) => {
+  const handleClose = () => {
     setOpen(false);
-    setSelectedQty(value);
   };
   return (
     <div className="flex flex-row w-full justify-between my-2">
