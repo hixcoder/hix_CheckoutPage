@@ -4,7 +4,7 @@ import { FaPlus } from "react-icons/fa6";
 import { RxCross2 } from "react-icons/rx";
 import { FaMinus } from "react-icons/fa";
 import { useEffect, useState } from "react";
-import { useOrderItems } from "../context/OrderItemsContext";
+import { useOrder } from "../context/OrderContext";
 export interface SimpleDialogProps {
   open: boolean;
   orderItem: OrderItem;
@@ -29,19 +29,11 @@ export function ItemQty(props: SimpleDialogProps) {
 
   // here we update the quantity of the product
   function handleUpdate() {
-    // const indexToUpdate = orderItems.findIndex(
-    //   (item) => item.productId === "product_id_1"
-    // );
-
-    // if (indexToUpdate !== -1) {
-    //   // Update the properties of the item at the found index
-    //   orderItems[indexToUpdate] = {
-    //     ...orderItems[indexToUpdate], // Maintain existing properties
-    //     quantity: selectedQty,
-    //   };
-    //   onClose(selectedQty);
-    // }
-    const updatedOrderItems = orderItems.map((item) => {
+    const updatedOrder: Order = {
+      items: [],
+      totalPrice: 0,
+    };
+    updatedOrder.items = order.items.map((item) => {
       if (item.productId === props.orderItem.productId) {
         return {
           ...item,
@@ -51,14 +43,19 @@ export function ItemQty(props: SimpleDialogProps) {
       onClose(selectedQty);
       return item;
     });
-
-    setOrderItems(updatedOrderItems);
+    let totalPriceTmp = 0;
+    updatedOrder.items.map((item, index) => {
+      totalPriceTmp += item.price * item.quantity;
+      console.log(index + "===> " + totalPriceTmp);
+    });
+    updatedOrder.totalPrice = totalPriceTmp;
+    setOrder(updatedOrder);
   }
 
-  const { orderItems, setOrderItems } = useOrderItems();
+  const { order, setOrder } = useOrder();
   useEffect(() => {
-    console.log("orderItems changed:", orderItems);
-  }, [orderItems]);
+    console.log("order changed:", order);
+  }, [order]);
 
   function onHandleChange(
     e:
@@ -132,4 +129,7 @@ export function ItemQty(props: SimpleDialogProps) {
       </div>
     </Dialog>
   );
+}
+function setOrder(updatedorder: any) {
+  throw new Error("Function not implemented.");
 }

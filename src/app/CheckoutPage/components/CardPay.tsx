@@ -2,13 +2,17 @@
 import { Menu, MenuItem } from "@mui/material";
 import { useState } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
+import { useOrder } from "../context/OrderContext";
+import { HandleCheckout } from "../fetch/ApiCalls";
 
 export default function CardPay() {
-  const [emailSubmitted, setEmailSubmitted] = useState(false);
+  const { order } = useOrder();
+
+  const [orderSubmitted, setOrderSubmitted] = useState(false);
+  const [orderStatus, setOrderStatus] = useState(["", ""]);
+
   const [data, setData] = useState({
     email: "",
-    subject: "",
-    message: "",
     CardNbr: "",
     cardExperDay: "",
     CardCvc: "",
@@ -17,17 +21,7 @@ export default function CardPay() {
   });
   const [errors, setErrors] = useState<Partial<typeof data>>({});
 
-  function onHandleChange(
-    e:
-      | React.ChangeEvent<HTMLInputElement>
-      | React.ChangeEvent<HTMLTextAreaElement>
-  ) {
-    const { name, value } = e.target;
-
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
-
-    // Validate inputs here and set error if necessary
-
+  function formValidator(name: string, value: string) {
     // ===================== VALIDATE EMAIL =====================
     if (name === "email") {
       if (!value) {
@@ -57,7 +51,7 @@ export default function CardPay() {
         }));
       }
       if (value.length > 16 || (!isDigit && value)) {
-        return;
+        return -1;
       }
       if (!value) {
         setErrors((prevErrors) => ({
@@ -84,7 +78,7 @@ export default function CardPay() {
         }));
       }
       if (value.length > 4 || (!isDigit && value)) {
-        return;
+        return -1;
       }
       if (!value) {
         setErrors((prevErrors) => ({
@@ -111,7 +105,7 @@ export default function CardPay() {
         }));
       }
       if (value.length > 3 || (!isDigit && value)) {
-        return;
+        return -1;
       }
       if (!value) {
         setErrors((prevErrors) => ({
@@ -136,7 +130,7 @@ export default function CardPay() {
         }));
       }
       if (value.length > 30) {
-        return;
+        return -1;
       }
       if (!value) {
         setErrors((prevErrors) => ({
@@ -155,7 +149,7 @@ export default function CardPay() {
         }));
       }
       if (value.length > 30) {
-        return;
+        return -1;
       }
       if (!value) {
         setErrors((prevErrors) => ({
@@ -163,6 +157,22 @@ export default function CardPay() {
           Zip: "Required",
         }));
       }
+    }
+  }
+
+  function onHandleChange(
+    e:
+      | React.ChangeEvent<HTMLInputElement>
+      | React.ChangeEvent<HTMLTextAreaElement>
+  ) {
+    const { name, value } = e.target;
+
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+
+    // Validate inputs here and set error if necessary
+    const status = formValidator(name, value);
+    if (status === -1) {
+      return;
     }
 
     setData((prevData) => ({
@@ -175,72 +185,67 @@ export default function CardPay() {
     e.preventDefault();
 
     // check for errors
+    formValidator("email", data.email);
+    formValidator("CardNbr", data.CardNbr);
+    formValidator("cardExperDay", data.cardExperDay);
+    formValidator("CardCvc", data.CardCvc);
+    formValidator("CardholderName", data.CardholderName);
+    formValidator("Zip", data.Zip);
     const hasErrors = Object.values(errors).some((error) => !!error);
     if (hasErrors) {
-      // console.error("Form has errors, please fix them");
+      console.error("Form has errors, please fix them");
       return;
     }
+    console.log("==========> FORM OK");
 
-    // Access form elements directly using FormData
-    const target = e.target as HTMLFormElement;
-    const formData = new FormData(target);
-    const email = formData.get("email");
-    const subject = formData.get("subject");
-    const message = formData.get("message");
-    formData.set("email", "");
-
-    // Perform basic validation
-    if (!email || !subject || !message) {
-      // Handle validation errors, e.g., display an error message to the user
-      console.error("Please fill in all the required fields");
-      return;
-    }
-
-    const data = {
-      email: email,
-      subject: subject,
-      message: message,
+    const customer: Customer = {
+      name: data.CardholderName,
+      email: data.email,
+      address: data.Zip + selectedCountry,
     };
-    const JSONdata = JSON.stringify(data);
-    try {
-      const endpoint = "/api/send";
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSONdata,
-      });
+
+    const paymentMethod: PaymentMethod = {
+      cardNumber: data.CardNbr,
+      expirationDate: data.cardExperDay,
+      cvv: data.CardCvc,
+      type: "visa-card",
+    };
+
+    const myData = {
+      order,
+      customer,
+      paymentMethod,
+    };
+    // console.log(myData);
+    const res = await HandleCheckout(myData);
+    if (res.status === "Ok") {
+      setOrderStatus(["Payment succeeded.", "text-green-500"]);
       setData({
         email: "",
-        subject: "",
-        message: "",
         CardNbr: "",
         cardExperDay: "",
         CardCvc: "",
         CardholderName: "",
         Zip: "",
       });
-      if (!response.ok) {
-        // Handle non-OK responses (e.g., server errors)
-        console.error("Failed to send message");
-        return;
-      }
-
-      setEmailSubmitted(true);
-      setTimeout(() => {
-        setEmailSubmitted(false);
-      }, 6000);
-    } catch (error) {
-      // Handle fetch errors (e.g., network issues)
-      console.error("Error sending message:", error);
+    } else if (res.status === "Not enough") {
+      setOrderStatus(["No enough money on this card.", "text-orange-500"]);
+    } else {
+      setOrderStatus(["Card is Not valid!", "text-red-500"]);
     }
+    console.log(res);
+    setOrderSubmitted(true);
+    setTimeout(() => {
+      setOrderSubmitted(false);
+    }, 6000);
   }
 
   const [selectedCountry, setSelectedCountry] = useState("Morocco");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
@@ -496,8 +501,10 @@ export default function CardPay() {
         >
           Checkout
         </button>
-        {emailSubmitted && (
-          <p className="text-green-500 text-sm mt-2">Email sent successfuly</p>
+        {orderSubmitted && (
+          <p className={`${orderStatus[1]} text-sm mt-2 animate-bounce `}>
+            {orderStatus[0]}
+          </p>
         )}
       </form>
     </div>

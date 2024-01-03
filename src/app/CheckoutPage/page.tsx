@@ -5,23 +5,16 @@ import OrderItem from "./components/OrderItem";
 import ApplePay from "./components/ApplePay";
 import CardPay from "./components/CardPay";
 import { useEffect, useState } from "react";
-import { useOrderItems } from "./context/OrderItemsContext";
+import { useOrder } from "./context/OrderContext";
 
 export default function CheckoutPage() {
-  const { orderItems } = useOrderItems();
-  const [totalPrice, setTotalPrice] = useState(0);
+  const { order } = useOrder();
   useEffect(() => {
     function getData() {
-      console.log("orderItems changed:", orderItems);
-      let totalPriceTmp = 0;
-      orderItems.map((item, index) => {
-        totalPriceTmp += item.price * item.quantity;
-        console.log(index + "===> " + totalPriceTmp);
-      });
-      setTotalPrice(totalPriceTmp);
+      console.log("order changed:", order);
     }
     getData();
-  }, [orderItems]);
+  }, [order]);
   return (
     <div className=" min-h-screen grid grid-cols-1  lg:grid-cols-12 items-center justify-between  bg-white text-gray-700 ">
       <div className="min-w-full col-span-6 place-self-center flex flex-col justify-between items-center h-full p-4 lg:p-12 lg:bg-slate-50  shadow-inner-left">
@@ -35,11 +28,11 @@ export default function CheckoutPage() {
             <div className="my-8 cursor-default">
               <p>total Price</p>
               <h1 className="text-4xl my-2 font-semibold text-black">
-                {"$" + totalPrice.toFixed(2)}
+                {"$" + order.totalPrice.toFixed(2)}
               </h1>
             </div>
             <div className="flex flex-col">
-              {orderItems.map((item, index) => (
+              {order.items.map((item, index) => (
                 <OrderItem key={index} orderItem={item} />
               ))}
             </div>
