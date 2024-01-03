@@ -4,6 +4,7 @@ import { useState } from "react";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import { useOrder } from "../context/OrderContext";
 import { HandleCheckout } from "../fetch/ApiCalls";
+import { QueryClient, useMutation, useQuery } from "@tanstack/react-query";
 
 export default function CardPay() {
   const { order } = useOrder();
@@ -216,30 +217,38 @@ export default function CardPay() {
       customer,
       paymentMethod,
     };
-    // console.log(myData);
     const res = await HandleCheckout(myData);
-    if (res.status === "Ok") {
-      setOrderStatus(["Payment succeeded.", "text-green-500"]);
-      setData({
-        email: "",
-        CardNbr: "",
-        cardExperDay: "",
-        CardCvc: "",
-        CardholderName: "",
-        Zip: "",
-      });
-    } else if (res.status === "Not enough") {
-      setOrderStatus(["No enough money on this card.", "text-orange-500"]);
-    } else {
-      setOrderStatus(["Card is Not valid!", "text-red-500"]);
-    }
-    console.log(res);
-    setOrderSubmitted(true);
-    setTimeout(() => {
-      setOrderSubmitted(false);
-    }, 6000);
+    return res;
   }
 
+  const { mutate } = useMutation({
+    mutationFn: handleSubmit,
+    onSuccess: (res) => {
+      if (res.status === "Ok") {
+        setOrderStatus(["Payment succeeded.", "text-green-500"]);
+        setData({
+          email: "",
+          CardNbr: "",
+          cardExperDay: "",
+          CardCvc: "",
+          CardholderName: "",
+          Zip: "",
+        });
+      } else if (res.status === "Not enough") {
+        setOrderStatus(["No enough money on this card.", "text-orange-500"]);
+      } else {
+        setOrderStatus(["Card is Not valid!", "text-red-500"]);
+      }
+      console.log(res);
+      setOrderSubmitted(true);
+      setTimeout(() => {
+        setOrderSubmitted(false);
+      }, 6000);
+      console.log("data", data);
+    },
+  });
+
+  // handle countries popover
   const [selectedCountry, setSelectedCountry] = useState("Morocco");
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -256,7 +265,7 @@ export default function CardPay() {
     handleClose();
   };
 
-  const menuItems = [
+  const countriesList = [
     "Morocco",
     "United States",
     "Canada",
@@ -293,7 +302,7 @@ export default function CardPay() {
     <div>
       <form
         className="flex flex-col font-light text-black"
-        onSubmit={handleSubmit}
+        onSubmit={mutate}
         noValidate
       >
         {/* ============== Email ============== */}
@@ -468,7 +477,7 @@ export default function CardPay() {
             }}
           >
             <div className="h-36 w-96 max-w-[32rem]">
-              {menuItems.map((item, index) => (
+              {countriesList.map((item, index) => (
                 <MenuItem key={index} onClick={() => handleMenuItemClick(item)}>
                   {item}
                 </MenuItem>

@@ -1,3 +1,4 @@
+import { QueryClient } from "@tanstack/react-query";
 import { NextResponse } from "next/server";
 
 export async function POST(req: any) {
